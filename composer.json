@@ -1,0 +1,6 @@
+{
+  "name": "btc.be",
+  "require": {
+    "twig/twig": "^2.0"
+  }
+}
