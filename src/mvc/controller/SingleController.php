@@ -22,11 +22,7 @@ class SingleController extends Controller {
         }
         else {
             // start a new game
-            $hash = SingleModel::generateHash();
-            // create new game in db
-            $sql = "INSERT INTO single_games (gamehash,game_start) VALUES ('$hash',NOW());";
-            $dbc = new DBC();
-            $dbc->query($sql) or die("ERROR @ SingleController / invoke - ".$dbc->error());
+            $hash = SingleModel::newGame();
             // forward to keyed url
             header("Location: ".WWW."single/".$hash);
         }
@@ -36,7 +32,17 @@ class SingleController extends Controller {
         $hash = $this->router->getUri(1);
         $game_id = SingleModel::gameIdFromHash($hash);
         $game = new SingleGame($game_id);
+        $check = SingleModel::checkGuess($game);
+        switch ($check['status']) {
+            case 'warning':
+                $this->twigarr['danger'] = $check['warning'];
+        }
         $this->twigarr['game'] = $game;
+        $letters = SingleModel::letters($game);
+        if ($letters['status'] == '1') {
+            SingleModel::endGame($game);
+        }
+        $this->twigarr['letters'] = $letters;
         $template = $this->twig->load('single/game.twig');
         echo $template->render($this->twigarr);        
     }

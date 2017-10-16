@@ -18,6 +18,8 @@ define('SITE_TITLE', 'Hangman');
 //router
 define('BASE_ROUTE', 'public/');
 
+// GAME VARS
+define('MAX_GUESSES', 10);
 
 // Requires
 require_once 'src/modules/DBC.php';
@@ -31,3 +33,5 @@ require_once 'src/mvc/controller/SingleController.php';
 require_once 'src/mvc/model/SingleModel.php';
 
 require_once 'src/modules/SingleGame.php';
+require_once 'src/modules/SingleGuess.php';
+require_once 'src/modules/Word.php';

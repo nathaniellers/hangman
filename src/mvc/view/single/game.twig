@@ -1,6 +1,39 @@
 {{ include('_header.twig') }}
 
-<h3>Game: {{ game.gamehash }}</h3>
+{% if danger is defined %}
+  <div class="alert alert-danger">{{ danger }}</div>
+{% endif %}
 
+<h3>Wrong Guesses Left: {{game.wrongGuessesLeft}} </h3>
+
+<h1>
+{% for letter in letters.wordline %}
+  {{ letter }}
+{% endfor %}
+</h1>
+
+<h3>Wrongs:
+  {% for letter in letters.wrong %}
+    {{ letter }}
+  {% endfor %}
+</h3>
+{% if letters.status == '1' %}
+  <h1>You Won!</h1>
+  <br/>
+  <a href="{{ www }}single/" class="btn btn-primary">New Game</a>
+{% else %}  
+  {% if game.wrongGuessesLeft > '0' %}
+  <br/>
+  <form method="POST">
+    Guess <input type="text" name="guess_form_letter" style="width: 50px; font-size: 20pt;" autofocus />
+    <input type="hidden" name="guess_form" value="go" />
+    <input type="submit" value="Guess" />
+  </form>
+  {% else %}
+  <h3>Game Over</h3>
+  {% endif %}
+{% endif %}
+
+{#<div>Spoiler! The word is {{ game.word }}</div>#}
 
 {{ include('_footer.twig') }}
