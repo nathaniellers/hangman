@@ -1,7 +1,8 @@
 <?php
-session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-use btcbe\mvc\controller\Controller as Controller;
+use hangman\mvc\controller\Controller as Controller;
 
 require '../global_config.php';
 

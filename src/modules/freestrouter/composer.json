@@ -1,0 +1,12 @@
+{
+    "name": "jfreeman82/freestrouter",
+    "description": "A PHP URL Router.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "jfreeman",
+            "email": "jfreeman@skedaddling.com"
+        }
+    ],
+    "require": {}
+}
