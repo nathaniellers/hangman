@@ -26,6 +26,8 @@ require_once 'vendor/autoload.php';
 require_once 'src/modules/freestrouter/Router.php';
 
 require_once 'src/mvc/controller/Controller.php';
+require_once 'src/mvc/controller/SingleController.php';
 
-require_once 'src/mvc/model/Model.php';
+require_once 'src/mvc/model/SingleModel.php';
 
+require_once 'src/modules/SingleGame.php';

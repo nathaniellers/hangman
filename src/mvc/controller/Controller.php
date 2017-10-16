@@ -5,7 +5,7 @@ namespace hangman\mvc\controller;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
-use freest\router\Router;
+use freest\router\Router as Router;
 
 use hangman\mvc\controller\SingleController;
 use hangman\mvc\controller\DuelController;
@@ -29,15 +29,13 @@ class Controller
         $loader = new Twig_Loader_Filesystem(ROOT_URL.'src/mvc/view/');
         $this->twig = new Twig_Environment($loader, array('cache' => false));
         $this->twigarr_init();    
-        // router
+        // router   
         $this->startRouter();
     }
         
     protected function startRouter() 
     {        
         $router = new Router();
-        $router->route('',          '0');
-        $router->route('index.php', '0');
         $router->route('single',    '1');
         $router->route('duel',      '2');
         $this->router = $router;
@@ -51,6 +49,8 @@ class Controller
     
     public function invoke() 
     {
+        //var_dump($this->router->routemap);
+        //exit(0);
         if ($this->router->get() == '1') {
             $this->single();
         }
@@ -81,7 +81,6 @@ class Controller
     {
         $template = $this->twig->load('warning.twig');
         $this->twigarr['message'] = $message; 
-        echo $template->render($this->twigarr);                
-            
+        echo $template->render($this->twigarr);                  
     }
 }
