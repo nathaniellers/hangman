@@ -3,14 +3,14 @@
 namespace hangman\modules;
 
 use freest\db\DBC;
-use hangman\modules\SingleGuess;
+use hangman\modules\Guess;
 use hangman\modules\Word;
 /**
  * Description of SingleGame
  *
  * @author jfreeman82 <jfreeman@skedaddling.com>
  */
-class SingleGame {
+class Game {
     
     private $id;
     private $wordid;
@@ -22,7 +22,7 @@ class SingleGame {
     {
         $dbc = new DBC();
         $sql = "SELECT wordid,gamehash,game_start,game_end 
-                FROM single_games 
+                FROM games 
                 WHERE id = '$id';";
         $q = $dbc->query($sql) or die("ERROR @ SingleGame - ".$dbc->error());
         $row = $q->fetch_assoc();
@@ -47,25 +47,25 @@ class SingleGame {
     
     public function guesses(): array
     {
-        $sql = "SELECT id FROM single_guesses WHERE game_id = '".$this->id."';";
+        $sql = "SELECT id FROM guesses WHERE game_id = '".$this->id."';";
         $dbc = new DBC();
         $q = $dbc->query($sql) or die("ERROR @ SingleGame / guesses - ".$dbc->error());
         $guesses = array();
         while ($row = $q->fetch_assoc()) {
             $guess_id = $row['id'];
-            $guesses[] = new SingleGuess($guess_id);
+            $guesses[] = new Guess($guess_id);
         }
         return $guesses;
     }
     public function wrongGuesses(): array
     {
-        $sql = "SELECT id FROM single_guesses WHERE game_id = '".$this->id."';";
+        $sql = "SELECT id FROM guesses WHERE game_id = '".$this->id."';";
         $dbc = new DBC();
         $q = $dbc->query($sql) or die("ERROR @ SingleGame / guesses - ".$dbc->error());
         $wrongGuesses = array();
         while ($row = $q->fetch_assoc()) {
             $guess_id = $row['id'];
-            $guess = new SingleGuess($guess_id);
+            $guess = new Guess($guess_id);
             if (!is_numeric(strpos($this->word(),$guess->letter()))) {
                 $wrongGuesses[] = $guess;
             }
@@ -88,5 +88,9 @@ class SingleGame {
     public function wrongGuessesLeft(): int
     {
         return MAX_GUESSES - $this->wrongGuessCount();
+    }
+    public function imgFile(): string
+    {
+        return 'hangman'.$this->wrongGuessCount().'.png';
     }
 }

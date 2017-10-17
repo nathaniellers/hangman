@@ -3,18 +3,18 @@
 namespace hangman\mvc\model;
 
 use freest\db\DBC;
-use hangman\modules\SingleGame;
+use hangman\modules\Game;
 /**
  * Description of SingleGameModel
  *
  * @author jfreeman82 <jfreeman@skedaddling.com>
  */
-class SingleModel 
+class GameModel 
 {
-    public static function checkGuess(SingleGame $game): array
+    public static function checkGuess(Game $game): array
     {
         if (filter_input(INPUT_POST,'guess_form') == "go") {
-            $guess_letter = filter_input(INPUT_POST, 'guess_form_letter');
+            $guess_letter = strtolower(filter_input(INPUT_POST, 'guess_form_letter'));
             if (empty($guess_letter)) {
                 return array('status' => 'warning','warning' => 'empty input');
             }
@@ -22,19 +22,23 @@ class SingleModel
             if (strlen($guess_letter) != 1) {
                 return array('status' => 'warning', 'warning' => 'Please enter a single letter');
             }
+            // check if char is alphabetic
+            if (!ctype_alpha($guess_letter)) {
+                return array('status' => 'warning', 'warning' => 'Non-alphabetic character detected.');
+            }
             $dbc = new DBC();            
             // check if letter exists
-            $sql_check = "SELECT id FROM single_guesses 
-                        WHERE letter = '$guess_letter' 
+            $sql_check = "SELECT id FROM guesses 
+                            WHERE letter = '$guess_letter' 
                             AND game_id = '".$game->id()."';";
-            $q_check = $dbc->query($sql_check) or die("ERROR @ SingleModel / checkGuess 1 - ".$dbc->error());
+            $q_check = $dbc->query($sql_check) or die("ERROR @ GameModel / checkGuess 1 - ".$dbc->error());
             if ($q_check->num_rows > 0) {
                 return array('status' => 'warning','warning' => 'letter already exists');
             }
             // inserting guess
-            $sql = "INSERT INTO single_guesses (game_id,letter,guess_date) 
+            $sql = "INSERT INTO guesses (game_id,letter,guess_date) 
                     VALUES ('".$game->id()."','$guess_letter',NOW());";
-            $dbc->query($sql) or die("ERROR @ SingleModel / checkGuess 2 - ".$dbc->error());
+            $dbc->query($sql) or die("ERROR @ GameModel / checkGuess 2 - ".$dbc->error());
             return array('status' => '1');
         }
         else {
@@ -45,8 +49,8 @@ class SingleModel
     public static function gameIdFromHash($hash): int
     {
         $dbc = new DBC();
-        $sql = "SELECT id FROM single_games WHERE gamehash = '$hash';";
-        $q = $dbc->query($sql) or die("ERROR @ SingleGameModel - ".$dbc->error());
+        $sql = "SELECT id FROM games WHERE gamehash = '$hash';";
+        $q = $dbc->query($sql) or die("ERROR @ GameModel - ".$dbc->error());
         return $q->fetch_assoc()['id'];
     }
     public static function generateHash(): string
@@ -60,8 +64,8 @@ class SingleModel
     public static function isValidHash($hash): bool
     {
         $dbc = new DBC();
-        $sql = "SELECT id FROM single_games WHERE gamehash = '$hash';";
-        $q = $dbc->query($sql) or die("ERROR @ SingleGameModel - ".$dbc->error());
+        $sql = "SELECT id FROM games WHERE gamehash = '$hash';";
+        $q = $dbc->query($sql) or die("ERROR @ GameModel - ".$dbc->error());
         return $q->num_rows > 0;
     }
     public static function newGame(): string
@@ -70,12 +74,12 @@ class SingleModel
         $dbc = new DBC();
         // get random dict id
         $sql_dict = "SELECT id FROM dict;";
-        $q_dict = $dbc->query($sql_dict) or die("ERROR @ SingleModel / newGame - ".$dbc->error());
+        $q_dict = $dbc->query($sql_dict) or die("ERROR @ GameModel / newGame - ".$dbc->error());
         $max = $q_dict->num_rows;
         $wordid = rand(1,$max);
         // create new game in db
-        $sql = "INSERT INTO single_games (wordid,gamehash,game_start) VALUES ('$wordid','$hash',NOW());";
-        $dbc->query($sql) or die("ERROR @ SingleModel / newGame 2 - ".$dbc->error());
+        $sql = "INSERT INTO games (wordid,gamehash,game_start) VALUES ('$wordid','$hash',NOW());";
+        $dbc->query($sql) or die("ERROR @ GameModel / newGame 2 - ".$dbc->error());
         return $hash;
     }
     
@@ -85,7 +89,7 @@ class SingleModel
     }
     
     // letters arranges the guesses and blanks
-    public static function letters(SingleGame $game): array
+    public static function letters(Game $game): array
     {
         $word = $game->word();
         $wordline = array();
@@ -130,13 +134,13 @@ class SingleModel
         }
         return $out;
     }
-    public static function endGame(SingleGame $game)
+    public static function endGame(Game $game)
     {
         // enter the game_end date
         $dbc = new DBC();
-        $sql = "UPDATE single_games 
+        $sql = "UPDATE games 
                     SET game_end = NOW() 
                     WHERE id = '".$game->id()."'";
-        $dbc->query($sql) or die("ERROR @ SingleModel / endGame - ".$dbc->error());
+        $dbc->query($sql) or die("ERROR @ GameModel / endGame - ".$dbc->error());
     }
 }

@@ -28,10 +28,10 @@ require_once 'vendor/autoload.php';
 require_once 'src/modules/freestrouter/Router.php';
 
 require_once 'src/mvc/controller/Controller.php';
-require_once 'src/mvc/controller/SingleController.php';
+require_once 'src/mvc/controller/GameController.php';
 
-require_once 'src/mvc/model/SingleModel.php';
+require_once 'src/mvc/model/GameModel.php';
 
-require_once 'src/modules/SingleGame.php';
-require_once 'src/modules/SingleGuess.php';
+require_once 'src/modules/Game.php';
+require_once 'src/modules/Guess.php';
 require_once 'src/modules/Word.php';

@@ -9,7 +9,7 @@ use freest\db\DBC;
  *
  * @author jfreeman82 <jfreeman@skedaddling.com>
  */
-class SingleGuess {
+class Guess {
 
     private $id;
     private $game_id;
@@ -20,7 +20,7 @@ class SingleGuess {
     {
         $dbc = new DBC();
         $sql = "SELECT game_id,letter,guess_date 
-                FROM single_guesses
+                FROM guesses
                 WHERE id = '$guess_id';";
         $q = $dbc->query($sql) or die("ERROR @ SingleGuess - ".$dbc->error());
         $row = $q->fetch_assoc();

@@ -3,6 +3,7 @@
  * Created: Sep 08, 2017
  */
 
+DROP DATABASE IF EXISTS hangman;
 CREATE DATABASE hangman;
 
 USE hangman;

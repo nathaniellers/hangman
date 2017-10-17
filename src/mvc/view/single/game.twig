@@ -1,10 +1,9 @@
 {{ include('_header.twig') }}
 
-{% if danger is defined %}
-  <div class="alert alert-danger">{{ danger }}</div>
-{% endif %}
-
-<h3>Wrong Guesses Left: {{game.wrongGuessesLeft}} </h3>
+{#<h3>Wrong Guesses Left: {{game.wrongGuessesLeft}} </h3>#}
+<div id="image">
+  <img src="{{www}}img/{{game.imgFile}}" alt="guessesleft-{{game.wrongGuessesLeft}}"/>
+</div>
 
 <h1>
 {% for letter in letters.wordline %}
@@ -18,9 +17,9 @@
   {% endfor %}
 </h3>
 {% if letters.status == '1' %}
-  <h1>You Won!</h1>
+  <h1 style="color: green;">You Won!</h1>
   <br/>
-  <a href="{{ www }}single/" class="btn btn-primary">New Game</a>
+  <a href="{{ www }}game/" class="btn btn-primary">New Game</a>
 {% else %}  
   {% if game.wrongGuessesLeft > '0' %}
   <br/>
@@ -30,8 +29,16 @@
     <input type="submit" value="Guess" />
   </form>
   {% else %}
-  <h3>Game Over</h3>
+  <h1 style="color: red;">Game Over</h1>
+  <h2>The word was: {{ game.word }}</h2>
+  <br/>
+  <a href="{{www}}game/" class="btn btn-primary">New Game</a>
   {% endif %}
+{% endif %}
+
+{% if danger is defined %}
+  <br/>
+  <div class="alert alert-danger col-lg-4 col-lg-offset-4">{{ danger }}</div>
 {% endif %}
 
 {#<div>Spoiler! The word is {{ game.word }}</div>#}

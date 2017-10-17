@@ -7,8 +7,7 @@ use Twig_Environment;
 
 use freest\router\Router as Router;
 
-use hangman\mvc\controller\SingleController;
-use hangman\mvc\controller\DuelController;
+use hangman\mvc\controller\GameController;
 
 /* 
  * Controller.php
@@ -36,8 +35,7 @@ class Controller
     protected function startRouter() 
     {        
         $router = new Router();
-        $router->route('single',    '1');
-        $router->route('duel',      '2');
+        $router->route('game',    '1');
         $this->router = $router;
     }
     private function twigarr_init()
@@ -52,10 +50,7 @@ class Controller
         //var_dump($this->router->routemap);
         //exit(0);
         if ($this->router->get() == '1') {
-            $this->single();
-        }
-        elseif ($this->router->get() == '2') {
-            $this->duel();
+            $this->game();
         }
         else {
             $this->front();
@@ -67,20 +62,9 @@ class Controller
         echo $template->render($this->twigarr);        
     }
     
-    protected function single() {
-        $sc = new SingleController();
+    protected function game() {
+        $sc = new GameController();
         $sc->invoke();
     }
     
-    protected function duel() {
-        $dc = new DuelController();
-        $dc->invoke();
-    }
-    
-    protected function warning($message) 
-    {
-        $template = $this->twig->load('warning.twig');
-        $this->twigarr['message'] = $message; 
-        echo $template->render($this->twigarr);                  
-    }
 }
