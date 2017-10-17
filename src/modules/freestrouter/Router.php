@@ -37,7 +37,7 @@ class Router
     
     public function get($i = 0)
     {
-        if (substr($this->uri,-4) == '.css') {
+        if (substr($this->uri,-4) == '.css' || substr($this->uri,-4) == '.png') {
             require $this->uri;
         }
         else {
