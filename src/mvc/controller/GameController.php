@@ -42,7 +42,7 @@ class GameController extends Controller {
             GameModel::endGame($game);
         }
         $this->twigarr['letters'] = $letters;
-        $template = $this->twig->load('single/game.twig');
+        $template = $this->twig->load('game/game.twig');
         echo $template->render($this->twigarr);        
     }
     
